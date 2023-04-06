@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+`<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -21,6 +21,7 @@ body{
 }
 
 .to-do-type{
+  display: flex;
     margin-top: 126px;
     outline: none;
     border: none;
@@ -30,10 +31,11 @@ body{
 }
 
 .icon-span{
-    position: absolute;
-    top: 8.3rem;
-    left: 52rem;
+  position: absolute;
+    top: 10rem;
+    left: 53rem;
     font-size: 20px;
+    display: flex;
 }
 
 .to-do-list{
@@ -69,6 +71,10 @@ body{
   position: relative;
   display: inline-block;
 }
+.dropbtn:hover{
+  background-color: orange;
+  font-weight: bolder;
+}
 
 .dropbtn {
   background-color: #4CAF50;
@@ -102,37 +108,150 @@ body{
 }
 
 .dropdown-content:hover option {
-  color: red;
+  color: blue;
+}
+
+#values{
+  display: flex;
+    flex-direction: column;
+    gap: 10px;
+    position: absolute;
+    top: 12rem;
+    left: 31rem;
+}
+
+#values p:first-child{
+  display: none;
+}
+
+#values p:nth-child(2){
+  margin-top: 30px;
+}
+
+.dropdown-content option:first-child:hover {
+  font-weight: bold;
+  color: white;
+  padding: 10px;
+}
+
+.dropdown-content option:nth-child(2):hover {
+  font-weight: bold;
+  color: white;
+   padding: 10px;
+}
+
+.dropdown-content option:nth-child(3):hover {
+  font-weight: bold;
+  color: white;
+   padding: 10px;
+}
+
+
+
+
+.valuesss{
+  background: white;
+    width: 23rem;
+    padding: 10px;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.span-div{
+  left: 20rem;
+  position: absolute;
+}
+
+.del{
+  padding: 16px 6px 5px 15px;
+    background: red;
+    width: 44px;
+    height: 44px;
+    margin-top: -44px;
+    margin-left: 20px;
+    color: white;
+    border-top-right-radius: 11px;
+    border-bottom-right-radius: 11px;
+}
+
+
+.check{
+  padding: 13px 7px 14px 12px;
+    margin-left: -17px;
+    background: green;
+    width: 37px;
+    height: 44px;
+    margin-top: -10px;
+    color: white;
 }
 
     </style>
 </head>
 <body>
     
-<div class="container  d-flex align-content-center justify-content-center">
+  <div class="container  d-flex align-content-center justify-content-center">
     <input type="text" id="input-box" placeholder="Some text" class="to-do-type">
-     <span class="icon-span">   <i class="fas fa-plus" id="plus-div"></i></span>
-
-</div>
-
-<div class="dropdown">
+    <span onclick="call()" class="icon-span"> <i class="fas fa-plus" id="plus-div"></i></span>
+    <div style="display:flex; flex-direction: column; gap:10px" id="values"></div>
+  </div>
+  <div class="dropdown">
     <button class="dropbtn">Select Status</button>
     <div class="dropdown-content">
-        <option>All</option>
-      <option>Complete</option>
-      <option>Incomplete</option>
+      <option id="all" >All</option>
+      <option id="complete">Complete</option>
+      <option id="incomplete">Incomplete</option>
     </div>
   </div>
-  
-
-<div class="container" id="body"></div>
+  <div class="container" id="body"></div>
 
 
 
 <script>
-const body = document.getElementById("body")
-const plusDiv = document.getElementById("plus-div")
-const inputValue =  document.getElementById("input-box");
+
+
+
+
+
+function sh() {
+        const l = localStorage.getItem('data').split(',')
+        let ll = "";
+        console.log(l)
+        l.forEach(da => ll += `<p class="valuesss">${da}<span class="span-div"> <i class="fa fa-check-circle check"></i><i class="fa fa-trash del"></i></span></p>`)
+        document.querySelector('#values').innerHTML = ll
+
+
+        const checkIcons = document.querySelectorAll('.check');
+  const delIcons = document.querySelectorAll('.del');
+
+  
+  checkIcons.forEach((icon, index) => {
+    icon.addEventListener('click', function() {
+      this.parentElement.parentElement.style.textDecoration = "line-through";
+    });
+  });
+  
+  delIcons.forEach((icon, index) => {
+    icon.addEventListener('click', function() {
+      const values = localStorage.getItem('data').split(',');
+      values.splice(index, 1); 
+      localStorage.setItem('data', values.join(',')); 
+      this.parentElement.parentElement.remove(); 
+    });
+  });
+}
+
+function call() {
+        const l = new Array(localStorage.getItem('data'))
+        const v = document.querySelector('#input-box').value;
+        l.push(v);
+        localStorage.setItem("data", l)
+       
+        sh()
+       
+      }
+    
+
+      window.addEventListener('load', sh);
 
 const dropbtn = document.getElementsByClassName("dropbtn")[0]; // get the first element with class "dropbtn"
 
@@ -147,62 +266,19 @@ function toggleDropdown() {
   }
 }
 
-plusDiv.addEventListener("click",plusFunction);
 
-function plusFunction(){
+const firstOption = document.querySelector('#all');
 
-  var NewDiv = document.createElement("div");
-  const spanDiv = document.createElement("span")
-  const deleteIcon = document.createElement("i");
-  const checkmarkIcon = document.createElement("i");
+firstOption.addEventListener('click', function() {
+  sh();
+});
 
-  NewDiv.className = "to-do-list";
-  NewDiv.innerHTML= inputValue.value;
+const secondOption = dropdownContent.querySelector('option:nth-child(2)');
 
-  spanDiv.className ="spandiv";
+secondOption.addEventListener('click', function() {
+  sh().remove();
+});
 
-  checkmarkIcon.classList.add("fas", "fa-check");
-  checkmarkIcon.style.backgroundColor = "green";
-  checkmarkIcon.style.color = "white";
-  checkmarkIcon.style.borderTopRightRadius = "0px";
-  checkmarkIcon.style.borderBottomRightRadius = "0px";
-
-  deleteIcon.classList.add("fas", "fa-trash-alt");
-  deleteIcon.style.color = "white";
-
-  body.appendChild(NewDiv);
-
-  NewDiv.appendChild(spanDiv);
-
-  spanDiv.appendChild(checkmarkIcon);
-  spanDiv.appendChild(deleteIcon);
-
-  inputValue.value = " ";
-
-  deleteIcon.addEventListener("click",detFunction)
-
-  function detFunction(){
-    NewDiv.remove();
-    savedValue.clear();
-  }
-
-  checkmarkIcon.addEventListener("click",checkFunction);
-
-  function checkFunction(){
-    NewDiv.style.textDecoration = "line-through";
-  }
-
-
-  localStorage.setItem('inputValues', NewDiv.innerHTML); // save to local storage
-}
-
-const savedValue = localStorage.getItem('inputValues');
-if (savedValue) {
-  var NewDiv = document.createElement("div");
-  NewDiv.className = "to-do-list";
-  NewDiv.innerHTML = savedValue;
-  body.appendChild(NewDiv);
-}
 
 </script>
 
