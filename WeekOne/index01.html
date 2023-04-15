@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+
+  <title>Testing</title>
+
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family: sans-serif;
+
+}
+
+body {
+  background-image: linear-gradient(120deg, #f6d365 0%, #fda085 100%);
+  color: white;
+  /* font-family: "Poppins", sans-serif; */
+  min-height: 100vh;
+      background-repeat: no-repeat;
+
+}
+
+#new-task-input, #add-task-button{
+    margin-top: 20px;
+    padding: 12px;
+    border: none;
+}
+
+.header{
+  min-height: 30vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+#add-task-button:hover {
+  background: #ff6f47;
+  color: white;
+}
+#task-list{
+    display: grid;
+    justify-content: center;
+    align-content: center;
+   
+}
+
+#task-list li{
+  color: black;
+    background: white;
+    padding: 0px 0px 0px 10px;
+    display: flex;
+    align-items: baseline;
+    margin-top: 10px;
+    /* max-width: 80%; */
+    list-style: none;
+    overflow: hidden;
+    display: flex;
+    justify-content: space-between;
+}
+
+#new-task-input{
+min-width: 30%;
+  list-style: none;
+}
+
+#task-list li span{
+  padding: 0px 0px 0px 6px;
+}   
+
+
+
+
+#task-list button:first-child{
+  padding: 10px;
+    background: green;
+    height: 35px;
+    border: none;
+    color: white;
+}
+
+
+#task-list button:nth-child(2){
+
+  padding: 10px;
+    background: orange;
+    height: 35px;
+    border: none;
+    color: white;
+}
+
+.com{
+  text-decoration: line-through;
+  opacity: 0.5;
+}
+
+#new-task-input:focus {
+  outline: none;
+}
+
+.fall {
+  transform: translateY(10rem) rotateZ(20deg);
+  opacity: 0;
+}
+
+</style>
+
+
+
+
+
+
+
+</head>
+<body>
+  <div class="header">
+    <input type="text" id="new-task-input" placeholder="Enter task">
+    <button id="add-task-button"> <i class="fas fa-plus" id="plus-div"></i></button>
+    <select id="select" style="padding: 10px; margin-top: 18px; margin-left: 29px; border: none;">
+      <option value="all">all</option>
+      <option value="completed">completed</option>
+      <option value="uncompleted">incompleted</option>
+    </select>
+  </div>
+  
+  <div id="task-list"></div>
+  
+  <script>
+    const addTaskButton = document.querySelector('#add-task-button');
+    const taskList = document.querySelector('#task-list');
+    const taskItems = JSON.parse(localStorage.getItem('taskItems')) || [];
+  
+    function saveTaskItems() {
+      localStorage.setItem('taskItems', JSON.stringify(taskItems));
+    }
+  
+    function renderTaskItems() {
+      taskList.innerHTML = '';
+      for (let i = 0; i < taskItems.length; i++) {
+        const taskItem = document.createElement('li');
+        taskItem.textContent = taskItems[i];
+  
+        const span = document.createElement('span');
+        span.classList.add("span");
+  
+        const deleteButtontwo = document.createElement('button');
+        deleteButtontwo.innerHTML = ' <i class="fa fa-check-circle check"></i>';
+        deleteButtontwo.addEventListener('click', function() {
+          this.parentElement.parentElement.classList.toggle("com");
+        });
+  
+        const deleteButton = document.createElement('button');
+        deleteButton.innerHTML = '<i class="fas fa-trash"></i>';
+        deleteButton.dataset.index = i;
+        deleteButton.addEventListener('click', function() {
+           deleteButton.classList.add("fall");
+          taskItems.splice(i, 1);
+        
+          saveTaskItems();
+          renderTaskItems();
+
+        });
+  
+        taskItem.appendChild(span);
+        span.appendChild(deleteButtontwo);
+        span.appendChild(deleteButton);
+        taskList.appendChild(taskItem);
+      }
+    }
+  
+    addTaskButton.addEventListener('click', function() {
+      const taskInput = document.querySelector('#new-task-input');
+      const taskText = taskInput.value.trim();
+  
+      if (taskText !== '') {
+        taskItems.push(taskText);
+        saveTaskItems();
+        renderTaskItems();
+        taskInput.value = '';
+      }
+    });
+  
+    const filterOption = document.querySelector('#select');
+  
+    function filterTodo() {
+      const taskItems = taskList.childNodes;
+      taskItems.forEach(function(taskItem) {
+        switch (filterOption.value) {
+          case "all":
+            taskItem.style.display = "flex";
+            break;
+          case "completed":
+            if (taskItem.classList.contains("com")) {
+              taskItem.style.display = "flex";
+            } else {
+              taskItem.style.display = "none";
+            }
+            break;
+          case "uncompleted":
+            if (!taskItem.classList.contains("com")) {
+              taskItem.style.display = "flex";
+            } else {
+              taskItem.style.display = "none";
+            }
+            break;
+        }
+      });
+    }
+  
+    filterOption.addEventListener("change", filterTodo);
+  
+    renderTaskItems();
+  </script>
+  
+
+  </script>
+</body>
+</html>
